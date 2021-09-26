@@ -15,7 +15,8 @@ STASH_ROOT = "moddb-stash"
 if not os.path.isdir(STASH_ROOT):
     os.mkdir(STASH_ROOT)
 
-PROJECT_ID = os.environ["PROJECT_ID"] if "PROJECT_ID" in os.environ else None
+PROJECT_ID = int(os.environ["PROJECT_ID"]
+                 ) if "PROJECT_ID" in os.environ else None
 
 API_KEY = os.environ["TODOIST_API_KEY"] if "TODOIST_API_KEY" in os.environ else None
 
@@ -71,17 +72,18 @@ else:
 
     if len(existing) == 0:
         print("creating new task...")
-        requests.post("https://api.todoist.com/rest/v1/tasks",
-                      data=json.dumps({
-                          "content": f"[{subject}]({addon_url})",
-                          "project_id": PROJECT_ID,
-                          "due_string": "today"
-                      }),
-                      headers={
-                          "Content-Type": "application/json",
-                          "X-Request-Id": str(uuid.uuid4()),
-                          "Authorization": f"Bearer {API_KEY}"
-                      })
+        response = requests.post("https://api.todoist.com/rest/v1/tasks",
+                                 data=json.dumps({
+                                     "content": f"[{subject}]({addon_url})",
+                                     "project_id": PROJECT_ID,
+                                     "due_string": "today"
+                                 }),
+                                 headers={
+                                     "Content-Type": "application/json",
+                                     "X-Request-Id": str(uuid.uuid4()),
+                                     "Authorization": f"Bearer {API_KEY}"
+                                 })
+        response.raise_for_status()
 
 with open(stash, "w", encoding="utf-8") as f:
     f.write(current)
