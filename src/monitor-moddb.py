@@ -34,6 +34,8 @@ request_headers = {
 
 response = requests.get(addon_url, headers=request_headers)
 
+response.raise_for_status()
+
 soup = BeautifulSoup(response.text, "html.parser")
 
 for li in soup.select("div.row a.author"):
