@@ -1,11 +1,13 @@
-CHCP 65001
-SET PYTHONIOENCODING=utf-8
-
-@ SET EXCLUDE_AUTHOR=
+@ SET EXCLUDE_AUTHOR=YourNameHere
 @ SET PROJECT_ID=00000000
 @ SET TODOIST_API_KEY=ffffffffffffffffffffffffffffffffffffffff
 
-SET RUNCMD=Python.exe monitor-moddb.py 
+@ if %PROJECT_ID% == 00000000 echo Configure the script first. & goto END
+
+CHCP 65001
+SET PYTHONIOENCODING=utf-8
+
+SET RUNCMD=Python.exe monitor-moddb.py
 
 %RUNCMD% NitpickerModpack
 %RUNCMD% YetAnotherCampfireSaving
@@ -13,3 +15,5 @@ SET RUNCMD=Python.exe monitor-moddb.py
 %RUNCMD% ToggleScope
 
 @ ECHO Done.
+
+:END
