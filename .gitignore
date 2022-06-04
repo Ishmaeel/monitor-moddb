@@ -1,3 +1,7 @@
+# Project specific
+moddb-stash
+monitor-moddb-mine.bat
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
