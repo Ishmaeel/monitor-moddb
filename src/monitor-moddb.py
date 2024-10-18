@@ -24,6 +24,7 @@ EXCLUDE_AUTHOR = os.environ["EXCLUDE_AUTHOR"] if "EXCLUDE_AUTHOR" in os.environ 
 
 addon_url = f"https://www.moddb.com/addons/{ADDON_NAME}/page/9999"
 stash = f"{STASH_ROOT}/{ADDON_NAME}.txt"
+stash_old = f"{STASH_ROOT}/{ADDON_NAME}.old"
 subject = f"New comment on {ADDON_NAME}"
 contents = [addon_url]
 
@@ -61,20 +62,24 @@ else:
     if not PROJECT_ID:
         exit("Cannot create Todoist item without PROJECT ID. Exiting.")
 
-    existing = requests.get("https://api.todoist.com/rest/v1/tasks",
+    response = requests.get("https://api.todoist.com/rest/v2/tasks",
                             params={
                                 "project_id": PROJECT_ID,
                                 "filter": f"search:{subject}"
                             },
                             headers={
                                 "Authorization": f"Bearer {API_KEY}"
-                            }).json()
+                            })
+
+    print(f"response: {response}")
+
+    existing = response.json()
 
     print("existing task count: %s" % len(existing))
 
     if len(existing) == 0:
         print("creating new task...")
-        response = requests.post("https://api.todoist.com/rest/v1/tasks",
+        response = requests.post("https://api.todoist.com/rest/v2/tasks",
                                  data=json.dumps({
                                      "content": f"[{subject}]({addon_url})",
                                      "project_id": PROJECT_ID,
@@ -86,6 +91,9 @@ else:
                                      "Authorization": f"Bearer {API_KEY}"
                                  })
         response.raise_for_status()
+
+    with open(stash_old, "w", encoding="utf-8") as f:
+        f.write(previous)
 
 with open(stash, "w", encoding="utf-8") as f:
     f.write(current)
